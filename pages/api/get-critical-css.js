@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 const critical = require('critical');
 
-async function call(promise) {
+export async function call(promise) {
 	let res, err;
 	try {
 		res = await promise;
