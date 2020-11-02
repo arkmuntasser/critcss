@@ -1,10 +1,11 @@
-import Head from 'next/head'
-import { useState } from 'react'
-import styles from '../styles/Home.module.css'
+import Head from 'next/head';
+import { useState } from 'react';
+import styles from '../styles/Home.module.css';
 import { call } from '../utils/helpers';
+import { FiLoader } from 'react-icons/fi';
 
 export default function Home() {
-	const [url, setUrl] = useState('https://togotoronto.com');
+	const [url, setUrl] = useState('');
 	const [critical, setCritical] = useState('');
 	const [fetchStatus, setFetchStatus] = useState('ready');
 
@@ -12,10 +13,11 @@ export default function Home() {
 		e.preventDefault();
 		if (url === '' && fetchStatus === 'ready') return;
 
+		setCritical('');
 		setFetchStatus('loading');
 		const [res, err] = await call(fetch(`/api/get-critical-css?url=${url}`));
 		if (err) {
-			fetchStatus(err);
+			setFetchStatus('error');
 			console.log(err);
 			return;
 		}
@@ -33,18 +35,30 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-			<form onSubmit={getCriticalCSS}>
-				<input
-					type="url"
-					value={url}
-					onChange={e => setUrl(e.target.value)}
-					placeholder="https://www.example.com/"
-					autoComplete="false"
-				/>
-				<button type="submit">Get that CRIT!</button>
+	  <main className={styles.main}>
+		  <section className={styles.header}>
+			<h1>CritCSS</h1>
+			<p>Get the critical CSS for any site!</p>
+			<form onSubmit={getCriticalCSS} className={styles.form}>
+				<label>
+					<span>URL</span>
+					<input
+						type="url"
+						value={url}
+						onChange={e => setUrl(e.target.value)}
+						placeholder="https://www.example.com/"
+						autoComplete="false"
+					/>
+				</label>
+				<button type="submit">Crit It!</button>
 			</form>
+		  </section>
 
-			<textarea readOnly value={critical}></textarea>
+		  <section className={styles.code}>
+			  {fetchStatus === 'loading' ?<FiLoader className={styles.spin}/> : null}
+			  {critical !== '' ? <code>{critical}</code> : null}
+		  </section>
+	  </main>
     </div>
   )
 }
