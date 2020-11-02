@@ -1,0 +1,9 @@
+{
+	"name": "critcss",
+	"version": 1,
+	"functions": {
+		"api/get-critical-css.js": {
+			"maxDuration": 10
+		}
+	}
+}
