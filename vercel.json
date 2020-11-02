@@ -2,7 +2,7 @@
 	"name": "critcss",
 	"version": 2,
 	"functions": {
-		"api/*.js": {
+		"pages/api/*.js": {
 			"maxDuration": 10
 		}
 	}
