@@ -80,6 +80,8 @@
 .spin {
   align-self: center;
   justify-self: center;
+  margin: 0 auto;
+  display: inline-block;
   width: 32px;
   height: 32px;
   animation: spin 1s linear infinite;
