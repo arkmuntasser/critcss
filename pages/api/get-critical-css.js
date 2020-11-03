@@ -1,12 +1,16 @@
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
-// const critical = require('critical');
 const penthouse = require('penthouse');
 
-async function call(promise) {
+async function call(promise, method = '') {
 	let res, err;
 	try {
 		res = await promise;
+		if (method === 'json') {
+			res = await res.json();
+		} else if (method === 'text') {
+			res = await res.text();
+		}
 	} catch (e) {
 		err = e;
 	}
