@@ -15,7 +15,7 @@ export default function Home() {
 
 		setCritical('');
 		setFetchStatus('loading');
-		const [res, err] = await call(fetch(`/api/get-critical-css?url=${url}`));
+		const [res, err] = await call(fetch(`/api/get-all-css?url=${url}`));
 		if (err) {
 			setFetchStatus('error');
 			console.log(err);
@@ -31,14 +31,14 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>CritCSS - Get the critical CSS for any site!</title>
+        <title>AllCSS - Get all the CSS for any site!</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
 	  <main className={styles.main}>
 		  <section className={styles.header}>
-			<h1>CritCSS</h1>
-			<p>Get the critical CSS for any site!</p>
+			<h1>AllCSS</h1>
+			<p>Get all the CSS for any site!</p>
 			<form onSubmit={getCriticalCSS} className={styles.form}>
 				<label>
 					<span>URL</span>
@@ -50,7 +50,7 @@ export default function Home() {
 						autoComplete="false"
 					/>
 				</label>
-				<button type="submit">Crit It!</button>
+				<button type="submit">Get It!</button>
 			</form>
 		  </section>
 
