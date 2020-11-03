@@ -1,8 +1,9 @@
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
-const critical = require('critical');
+// const critical = require('critical');
+const penthouse = require('penthouse');
 
-export async function call(promise) {
+async function call(promise) {
 	let res, err;
 	try {
 		res = await promise;
@@ -12,9 +13,22 @@ export async function call(promise) {
 	return [res, err];
 }
 
+function sendError(res, err = 'Something broke...') {
+	res.status = 502;
+	res.send(err);
+}
+
 export default async (req, res) => {
-	const response = await fetch(req.query.url);
-	const body = await response.text();
+	if (!req.query || !req.query.url) {
+		sendError(res, 'No url provided');
+		return;
+	}
+
+	const [body, bodyErr] = await call(fetch(req.query.url), 'text');
+	if (bodyErr) {
+		sendError(res, 'body error');
+		return;
+	}
 
 	const $ = cheerio.load(body);
 	const cssFilePaths = [];
@@ -27,26 +41,24 @@ export default async (req, res) => {
 		}
 	});
 
-	const [{css, html, uncritical}, err] = await call(critical.generate({
-		html: body,
-		css: cssFilePaths,
-		dimensions: [
-			{
-				width: 414,
-				height: 736,
-			},
-			{
-				width: 1440,
-				height: 900,
-			},
-		],
-	}));
-	if (err) {
-		res.statusCode = 500;
-		res.send('Something broke...');
+	let allStyles = [];
+	for (let path of cssFilePaths) {
+		const [styles, err] = await call(fetch(path), 'text');
+		if (err) {
+			sendError(res, err);
+			return;
+		}
+		allStyles.push(styles)
+	}
+	allStyles = allStyles.join('');
+
+	const [crit, critErr] = await call(penthouse({ url: req.query.url, cssString: allStyles }));
+	if (critErr) {
+		console.log(critErr);
+		sendError(res, 'crit err');
 		return;
 	}
 
-	res.statusCode = 200
-	res.send(css);
+	res.statusCode = 200;
+	res.send(crit);
 }
