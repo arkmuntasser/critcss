@@ -9,11 +9,13 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
-    "critical": "^2.0.6",
     "next": "10.0.0",
     "node-fetch": "^2.6.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-icons": "^3.11.0"
+  },
+  "devDependencies": {
+    "penthouse": "^2.3.2"
   }
 }
